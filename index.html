@@ -1,0 +1,320 @@
+<!-- Styles -->
+<style>
+
+#wrapper {
+  display: flex;
+}
+
+#chartdiv {
+  flex: 0 0 65%;
+}
+
+#info {
+  flex: 1;
+}
+
+.container {
+  width: 100%;
+  height: 700px;
+  background: white;
+  margin: auto;
+  padding: 0px;
+}
+
+.chartdiv {
+  width: 50%;
+  height: 700px;
+  float: left;
+}
+
+.info {
+  margin-right: 10%;
+  height: 700px;
+  padding: 10px;
+  background: transparent;
+}
+
+    body { margin: 0; 
+           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+    </style>
+    
+    <!-- Resources -->
+    <script src="data/countries_clipped.js"></script>
+    <script src="data/highlight.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/maps.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/geodata/worldLow.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/themes/dataviz.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+    
+    <!-- Chart code -->
+    <script>
+    am4core.ready(function() {
+    
+    // Themes begin
+    am4core.useTheme(am4themes_dataviz);
+    am4core.useTheme(am4themes_animated);
+    // Themes end
+    
+    // Create map instance
+    var chart = am4core.create("chartdiv", am4maps.MapChart);
+    
+    // Set map definition
+    chart.geodata = americas;
+    
+    // Set projection
+    chart.projection = new am4maps.projections.Orthographic();
+    chart.deltaLatitude = -30;
+    chart.deltaLongitude = 85;
+        // chart.projection = new am4maps.projections.Miller();
+    chart.homeZoomLevel = 2;
+    chart.homeGeoPoint = {
+       latitude: 54,
+       longitude: -92
+   };
+    
+    // Create map polygon series
+    var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
+    
+
+    // Make map load polygon (like country names) data from GeoJSON
+    polygonSeries.useGeodata = true;
+    
+    // Configure series
+    var polygonTemplate = polygonSeries.mapPolygons.template;
+    polygonTemplate.polygon.fillOpacity = 0.9;
+    polygonTemplate.polygon.fill = am4core.color("#5d6160");
+    polygonTemplate.strokeWidth = 1.5;
+
+    // globe background
+    // chart.backgroundSeries.mapPolygons.template.polygon.fill = am4core.color("#aadaff");
+    // chart.backgroundSeries.mapPolygons.template.polygon.fillOpacity = 1;
+
+    // highlighted subdividions added
+    var subDivSeries = chart.series.push(new am4maps.MapPolygonSeries());
+    subDivSeries.geodata = subdiv;
+
+    var subDivPolygonTemplate = subDivSeries.mapPolygons.template;
+    subDivPolygonTemplate.fill = am4core.color("#343434");
+    subDivPolygonTemplate.stroke = am4core.color("#5d6160");
+    subDivPolygonTemplate.strokeWidth = 0.1;
+    subDivPolygonTemplate.nonScalingStroke = false;
+    var shadow = subDivPolygonTemplate.filters.push(new am4core.DropShadowFilter());
+    // shadow.dx = 'shadowX';
+    // shadow.dy = "shadowY"; 
+
+    
+    // Add image series
+    var imageSeries = chart.series.push(new am4maps.MapImageSeries());
+    imageSeries.mapImages.template.propertyFields.longitude = "longitude";
+    imageSeries.mapImages.template.propertyFields.latitude = "latitude";
+    // imageSeries.mapImages.template.tooltipText = "{title}";
+    imageSeries.mapImages.template.propertyFields.url = "url";
+    imageSeries.mapImages.template.tooltipHTML = `<center><strong>{title}</center>
+    <span style="color:#fffbbf"><hr /></span>
+    <span style="color:{color}; font-size: 12px; line-height: 1.5"><center>{location}<br>{commodity}</center></span></strong>`;
+    imageSeries.tooltip.pointerOrientation = "vertical";
+    imageSeries.tooltip.getFillFromObject = false;
+    // var tooltipShadow = imageSeries.tooltip.background.filters.getIndex(0);
+    // tooltipShadow.dx = 2;
+    // tooltipShadow.dy = 2;
+    // tooltipShadow.blur = 5;
+    // tooltipShadow.color = am4core.color("#fffbbf");
+
+    imageSeries.tooltip.background.fill = am4core.color("#343434");
+    imageSeries.tooltip.background.stroke = am4core.color("#343434");
+
+// Configure series
+var imageTemplate = imageSeries.mapImages.template;
+imageTemplate.events.on("hit", function(ev) {
+  var data = ev.target.dataItem.dataContext;
+  var info = document.getElementById("info");
+  info.innerHTML = "<img src='" + data.image + "' width='570' height='305'" + "<br><h1>" + data.name + " </h1><hr /> " + "<h3><span style='color:#fcb416'>" + data.location + "<br>" + data.status + " | " + data.commodity + "</span>" + "</h3>";
+  if (data.description) {
+    info.innerHTML += data.description;
+  }
+  else {
+    info.innerHTML += "<i>No description provided.</i>"
+  }
+});
+    
+    var circle = imageSeries.mapImages.template.createChild(am4core.Circle);
+    circle.radius = 3.5;
+    circle.propertyFields.stroke = "color";
+    circle.propertyFields.fill = "fillColor";
+    circle.strokeWidth = 1;
+    
+    var circle2 = imageSeries.mapImages.template.createChild(am4core.Circle);
+    circle2.radius = 4;
+    circle2.propertyFields.fill = "color";
+    
+    
+    circle2.events.on("inited", function(event){
+      animateBullet(event.target);
+    })
+    
+    function animateBullet(circle) {
+        var animation = circle.animate([{ property: "scale", from: 1, to: 2 }, { property: "opacity", from: 1, to: 0 }], 2500, am4core.ease.circleOut);
+        animation.events.on("animationended", function(event){
+          animateBullet(event.target.object);
+        })
+    }
+    
+    var colorSet = new am4core.ColorSet();
+    
+    imageSeries.data = [   {
+      "title": "KUDZ ZE KAYAH",
+      "name": "KUDZ ZE KAYAH",
+      "id": "kudz_ze_kayah",
+      "location" : "Yukon, CAN",
+      "status": "2015 and Ongoing",
+      "commodity": "Zn Cu Pb Au Ag",
+      "latitude": 63,
+      "longitude": -133.3,
+      "color": "#fcb416",
+      "fillColor": "#fffbbf",
+      "image": "data/img/kudz_ze_kayah.png",
+      "description": "Kudz Ze Kayah is a feasibility stage project focused on two volcanic massive sulphide (VMS) deposits located in the Finlayson District of central Yukon. Equity has been managing exploration and development work since early 2015 including: submitting permit application, constructing camp, managing >50,000 m of diamond drilling, geological interpretation and modelling to support an updated resource estimate and pre-feasibility study."
+      
+    }, {
+      "title": "MADSEN",
+      "name": "MADSEN",
+      "id": "madsen",
+      "location" : "Ontario, CAN",
+      "status": "2014 and Ongoing",
+      "commodity": "Au",
+      "latitude": 52.1,
+      "longitude": -89.4,
+      "color": "#fcb416",
+      "fillColor": "#fffbbf",
+      "image": "data/img/madsen.png",
+      "description": "Madsen is a development stage project focused on exploration around two past-producing gold mines in the Red Lake district of northern Ontario. Equity has been managing surface and underground exploration programs since 2014 across the Madsen property including over 150,000 m of diamond drilling since 2016."
+
+    }, {
+      "title": "MOUNT MILLIGAN",
+      "name": "MOUNT MILLIGAN",
+      "id": "mt_milligan",
+      "location" : "British Columbia, CAN",
+      "status": "2010 and Ongoing",
+      "commodity": "Au Cu",
+      "latitude": 53.9,
+      "longitude": -123.7,
+      "color": "#fcb416",
+      "fillColor": "#fffbbf",
+      "image": "data/img/mt_milligan.png",
+      "description": "Mount Milligan is a copper-gold mine located in central British Columbia. Since 2010, Equity has managed >50,000 m of drilling on the deposit, as well as reconnaissance exploration and geophysical surveys."
+    }, {
+      "title": "DETOUR TREND",
+      "name": "DETOUR TREND",
+      "id": "detour",
+      "location" : "Quebec, CAN",
+      "status": "4 Years",
+      "commodity": "Au",
+      "latitude": 53.2,
+      "longitude": -72,
+      "color": "#fcb416",
+      "fillColor": "#fffbbf",
+      "image": "data/img/detour.png",
+      "description": "Detour Trend was a large-scale drilling project in the Canadian Province of Quebec which allowed us to work alongside Balmoral Resources to plan and execute over 68,000 m of diamond drilling. Our work in this area led to the discovery of several new high-grade zones of gold mineralization and won Balmoral Resources Quebec Prospector of the Year in 2013."
+
+    }, {
+      "title": "BERG",
+      "name": "BERG",
+      "id": "berg",
+      "location" : "British Columbia, CAN",
+      "status": "2007 and Ongoing",
+      "commodity": "Cu Mo Ag",
+      "latitude": 56,
+      "longitude": -129.5,
+      "color": "#ff7801",
+      "fillColor": "#ffc773",
+      "image": "data/img/berg.png",
+      "description": "Berg is an advanced-stage copper-molybdenum-silver project located in west-central BC. Over the past 10 years Equity has managed >30,000 m of resource delineation drilling at Berg, and has also built a 3D geological model of the deposit, supported data collection for new resource calculations, built and operated a 40-person camp in a remote mountain setting, and conducted property wide reconnaissance exploration."
+
+    }, {
+      "title": "WERNECKE",
+      "name": "WERNECKE",
+      "id": "wernecke",
+      "location" : "Yukon, CAN",
+      "status": "5 Years",
+      "commodity": "Cu Au U",
+      "latitude": 67.6  ,
+      "longitude": -136.5,
+      "color": "#ff7801",
+      "fillColor": "#ffc773",
+      "image": "data/img/wernecke.png",
+      "description": "Wernecke is an early-stage iron-oxide-copper-gold (IOCG) project located in north-eastern Yukon. From 1992-95, Equity was a driving force behind rejuvenation of exploration in the Wernecke region and the introduction of the IOCG Model to the area. In 2006-07, Equity further evaluated numerous targets by soil, silt and rock geochemistry, mapping, prospecting, trenching and diamond drilling."
+
+    }, {
+      "title": "HOMESTAKE RIDGE",
+      "name": "HOMESTAKE RIDGE",
+      "id": "homestake",
+      "location" : "British Columbia, CAN",
+      "status": "2 Years",
+      "commodity": "Au Ag Zn",
+      "latitude": 55.9,
+      "longitude": -124.7,
+      "color": "#fcb416",
+      "fillColor": "#fffbbf",
+      "image": "data/img/homestake.png",
+      "description": "Homestake Ridge is an advanced-stage gold-silver property located in north-west BC. Over two seasons, Equity managed significant exploration at Homestake Ridge for Agnico Eagle that included >6,500 m of drilling as well as property-scale geologic mapping, soil sampling and ground geophysics. Equity also built and operated a 30-person camp in a remote mountain setting and helped discover a new 1 km long zone of epithermal veining that runs parallel to the previously defined mineralization."
+
+    }, {
+      "title": "WOLVERINE",
+      "name": "WOLVERINE",
+      "id": "wolverine",
+      "location" : "Yukon, CAN",
+      "status": "2 Years",
+      "commodity": "Zn Cu Pb Au Ag",
+      "latitude": 61,
+      "longitude": -132.5,
+      "color": "#fcb416",
+      "fillColor": "#fffbbf",
+      "image": "data/img/wolverine.png",
+      "description": "Wolverine is a past-producing, high-grade, zinc-silver-copper-lead-gold underground mine that was discovered by an Equity team led by Mark Baknes. In 2002, Mr. Baknes was awarded AMEBC’s Excellence in Prospecting and Mineral Exploration for this discovery."
+
+    }, {
+      "title": "AURIZONA",
+      "name": "AURIZONA",
+      "id": "aurizona",
+      "location" : "Maranhao, BRA",
+      "status": "2 Years",
+      "commodity": "Au",
+      "latitude": -4,
+      "longitude": -46.11,
+      "color": "#fcb416",
+      "fillColor": "#fffbbf",
+      "image": "data/img/aurizona.png",
+      "description": "Aurizona is an open pit gold mine located in northern Brazil that re-commenced production in 2019. Equity has provided technical input on the project since 2017 including Resource Estimation and drill program optimization for resource conversion and near-mine exploration targets."
+
+    }, {
+      "title": "HOG RANCH",
+      "name": "HOG RANCH",
+      "id": "hog_ranch",
+      "location" : "Nevada, USA",
+      "status": "1 Year",
+      "commodity": "Au",
+      "latitude": 38.8,
+      "longitude": -114,
+      "color": "#fcb416",
+      "fillColor": "#fffbbf",
+      "image": "data/img/hog_ranch.png",
+      "description": "Hog Ranch is a historical heap-leach mine site that was focussed on a broad low-grade alteration zone comprising part of a low-sulphidation epithermal system. Equity compiled historical data, mapped the property and managed a combination diamond and reverse circulation drilling campaign targeting high-grade gold veins in the feeder parts of the epithermal system."
+
+    } ];
+    
+    /* Add legend */
+    // chart.legend = new am4maps.Legend();
+    // chart.legend.position = "right";
+    // chart.legend.align = "right";
+    
+    }); // end am4core.ready()
+    </script>
+    
+    <!-- HTML -->
+  <section class="container">
+    <div class="chartdiv"></div>
+    <div id = "info" class="info"></div>
+  </section>
