@@ -29,6 +29,7 @@
 
 .info {
   margin-right: 10%;
+  margin-left: 10%;
   height: 700px;
   padding: 10px;
   background: transparent;
@@ -88,7 +89,7 @@
     // Configure series
     var polygonTemplate = polygonSeries.mapPolygons.template;
     polygonTemplate.polygon.fillOpacity = 0.9;
-    polygonTemplate.polygon.fill = am4core.color("#5d6160");
+    polygonTemplate.polygon.fill = am4core.color("#c6c8c7");
     polygonTemplate.strokeWidth = 1.5;
 
     // globe background
@@ -105,8 +106,8 @@
     subDivPolygonTemplate.strokeWidth = 0.1;
     subDivPolygonTemplate.nonScalingStroke = false;
     var shadow = subDivPolygonTemplate.filters.push(new am4core.DropShadowFilter());
-    // shadow.dx = 'shadowX';
-    // shadow.dy = "shadowY"; 
+    shadow.dx = "shadowX";
+    shadow.dy = "shadowY"; 
 
     
     // Add image series
@@ -134,7 +135,8 @@
   imageTemplate.events.on("hit", function(ev) {
   var data = ev.target.dataItem.dataContext;
   var info = document.getElementById("info");
-  info.innerHTML = "<img src='" + data.image + "' width='570' height='305'" + "<br><h1>" + data.name + " </h1><hr /> " + "<h3><span style='color:#fcb416'>" + data.location + "<br>" + data.status + " | " + data.commodity + "</span>" + "</h3>";
+  info.innerHTML = "<img src='" + data.image + "' width='570' height='305'" + "<br><h1>" + data.name + " </h1><hr /> " + "<h3><span style='color:#fcb416'>" 
+    + data.location + " | " + data.stage + "<br>" + data.status + " | " + data.commodity + "</span>" + "</h3>";
   if (data.description) {
     info.innerHTML += data.description;
   }
@@ -148,7 +150,7 @@
     circle.radius = 3;
     circle.propertyFields.stroke = "color";
     circle.propertyFields.fill = "fillColor";
-    circle.strokeWidth = 1.5;
+    circle.strokeWidth = 1;
     
     var circle2 = imageSeries.mapImages.template.createChild(am4core.Circle);
     circle2.radius = 3.5;
@@ -173,6 +175,7 @@
       "name": "KUDZ ZE KAYAH",
       "id": "kudz_ze_kayah",
       "location" : "Yukon, CAN",
+      "stage" : "Feasibility Stage",
       "status": "2015 and Ongoing",
       "commodity": "Zn Cu Pb Au Ag",
       "latitude": 63,
@@ -187,6 +190,7 @@
       "name": "MADSEN",
       "id": "madsen",
       "location" : "Ontario, CAN",
+      "stage" : "Development Stage",
       "status": "2014 and Ongoing",
       "commodity": "Au",
       "latitude": 52.1,
@@ -201,6 +205,7 @@
       "name": "MOUNT MILLIGAN",
       "id": "mt_milligan",
       "location" : "British Columbia, CAN",
+      "stage" : "Producing Mine",
       "status": "2010 and Ongoing",
       "commodity": "Au Cu",
       "latitude": 53.9,
@@ -214,10 +219,11 @@
       "name": "DETOUR TREND",
       "id": "detour",
       "location" : "Quebec, CAN",
+      "stage" : "Advanced-Stage",
       "status": "4 Years",
       "commodity": "Au",
-      "latitude": 53.2,
-      "longitude": -72,
+      "latitude": 49.2,
+      "longitude": -77,
       "color": "#fcb416",
       "fillColor": "#fffbbf",
       "image": "data/img/detour.png",
@@ -228,6 +234,7 @@
       "name": "BERG",
       "id": "berg",
       "location" : "British Columbia, CAN",
+      "stage" : "Advanced-Stage",
       "status": "2007 and Ongoing",
       "commodity": "Cu Mo Ag",
       "latitude": 56,
@@ -242,6 +249,7 @@
       "name": "WERNECKE",
       "id": "wernecke",
       "location" : "Yukon, CAN",
+      "stage" : "Early-Stage",
       "status": "5 Years",
       "commodity": "Cu Au U",
       "latitude": 67.6  ,
@@ -256,6 +264,7 @@
       "name": "HOMESTAKE RIDGE",
       "id": "homestake",
       "location" : "British Columbia, CAN",
+      "stage" : "Advanced-Stage",
       "status": "2 Years",
       "commodity": "Au Ag Zn",
       "latitude": 55.9,
@@ -272,6 +281,7 @@
       "location" : "Yukon, CAN",
       "status": "2 Years",
       "commodity": "Zn Cu Pb Au Ag",
+      "stage" : "Past-Producing Mine",
       "latitude": 61,
       "longitude": -132.5,
       "color": "#fcb416",
@@ -284,6 +294,7 @@
       "name": "AURIZONA",
       "id": "aurizona",
       "location" : "Maranhao, BRA",
+      "stage" : "Producing Mine",
       "status": "2 Years",
       "commodity": "Au",
       "latitude": -4,
@@ -298,10 +309,11 @@
       "name": "HOG RANCH",
       "id": "hog_ranch",
       "location" : "Nevada, USA",
+      "stage" : "Advanced-Stage",
       "status": "1 Year",
       "commodity": "Au",
       "latitude": 38.8,
-      "longitude": -114,
+      "longitude": -116,
       "color": "#fcb416",
       "fillColor": "#fffbbf",
       "image": "data/img/hog_ranch.png",
@@ -313,7 +325,15 @@
     // chart.legend = new am4maps.Legend();
     // chart.legend.position = "right";
     // chart.legend.align = "right";
-    
+
+    // reset view
+//     var home = chart.chartContainer.createChild(am4core.Button);
+//     home.label.text = "Reset View";
+//     home.align = "left";
+//     home.events.on("hit", function(ev) {
+//     chart.goHome();
+
+// });
     }); // end am4core.ready()
     </script>
     
