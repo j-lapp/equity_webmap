@@ -45,7 +45,6 @@
     <script src="data/highlight.js"></script>
     <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
     <script src="https://cdn.amcharts.com/lib/4/maps.js"></script>
-    <script src="https://cdn.amcharts.com/lib/4/geodata/worldLow.js"></script>
     <script src="https://cdn.amcharts.com/lib/4/themes/dataviz.js"></script>
     <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
     
@@ -74,6 +73,10 @@
        latitude: 54,
        longitude: -92
    };
+   chart.seriesContainer.draggable = false;
+   chart.seriesContainer.resizable = false;
+   chart.seriesContainer.events.disableType("doublehit");
+   chart.chartContainer.background.events.disableType("doublehit");
     
     // Create map polygon series
     var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
@@ -127,8 +130,8 @@
     imageSeries.tooltip.background.stroke = am4core.color("#343434");
 
 // Configure series
-var imageTemplate = imageSeries.mapImages.template;
-imageTemplate.events.on("hit", function(ev) {
+  var imageTemplate = imageSeries.mapImages.template;
+  imageTemplate.events.on("hit", function(ev) {
   var data = ev.target.dataItem.dataContext;
   var info = document.getElementById("info");
   info.innerHTML = "<img src='" + data.image + "' width='570' height='305'" + "<br><h1>" + data.name + " </h1><hr /> " + "<h3><span style='color:#fcb416'>" + data.location + "<br>" + data.status + " | " + data.commodity + "</span>" + "</h3>";
@@ -139,15 +142,16 @@ imageTemplate.events.on("hit", function(ev) {
     info.innerHTML += "<i>No description provided.</i>"
   }
 });
+
     
     var circle = imageSeries.mapImages.template.createChild(am4core.Circle);
-    circle.radius = 3.5;
+    circle.radius = 3;
     circle.propertyFields.stroke = "color";
     circle.propertyFields.fill = "fillColor";
-    circle.strokeWidth = 1;
+    circle.strokeWidth = 1.5;
     
     var circle2 = imageSeries.mapImages.template.createChild(am4core.Circle);
-    circle2.radius = 4;
+    circle2.radius = 3.5;
     circle2.propertyFields.fill = "color";
     
     
