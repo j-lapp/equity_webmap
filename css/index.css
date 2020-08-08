@@ -1,8 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Quando);
-*, *:after, *:before {
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-}
+
 
 body { margin: 0; 
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -25,8 +21,9 @@ body { margin: 0;
     flex-grow: 1;
     display:inline-block;
     background-color: white;
+    /* border-bottom: 1px solid #1E2E64; */
 }
-.info{
+#info{
     height: 100%;
     width:40%;
     flex-grow: 1;
@@ -51,7 +48,23 @@ body { margin: 0;
   height: 60%;
 }
 
-.vertical-menu a {
+.project_nav_label a {
+  font-weight: bold;
+  color: "#343434";
+  font-size: 18;
+  position: relative;
+  display:block;
+  padding: 8px;
+  text-align: left;
+  margin-left: 10%;
+  top:40px;
+  text-decoration: underline;
+  text-decoration-color:  rgba(250,237,0,1);
+
+
+}
+
+.project_nav_item a {
   background-color: white;
   color: "#343434";
   position: relative;
@@ -61,12 +74,12 @@ body { margin: 0;
   cursor: pointer;
   text-align: left;
   margin-left: 10%;
-  top:40px
+  top:30px
 
 
 }
 
-a:before {
+.project_nav_item a:before {
   content: "";
   position: absolute;
   width: 0;
@@ -78,9 +91,11 @@ a:before {
   transition: all 0.5s ease-in-out;
 }
 
-a:hover:before, a:focus {
+.project_nav_item a:hover:before, a:focus {
   visibility: visible;
   width: 50%;
   text-decoration: underline;
 }
+
+
 

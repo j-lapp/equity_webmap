@@ -116,7 +116,7 @@
     imageSeries.tooltip.pointerOrientation = "left";
     imageSeries.tooltip.getFillFromObject = false;
     imageSeries.calculateVisualCenter = true;
-    imageSeries.tooltip.dx = 8;
+    imageSeries.tooltip.dx = 10;
     // var tooltipShadow = imageSeries.tooltip.background.filters.getIndex(0);
     // tooltipShadow.dx = 2;
     // tooltipShadow.dy = 2;
@@ -136,7 +136,7 @@
   imageTemplate.tooltipHTML = `<center><strong>{title}</center>
     <span style="color:#fffbbf"><hr /></span>
     <span style="color:{color}; font-size: 12px; line-height: 1.5"><center>{location}<br>{commodity}</center></span></strong>`;
-  imageTemplate.tooltipPosition = "fixed";
+  imageTemplate.tooltipPosition = "fixed";  
 
   imageTemplate.events.on("hit", function(ev) {
   var data = ev.target.dataItem.dataContext;
@@ -149,26 +149,27 @@
   else {
     info.innerHTML += "<i>No description provided.</i>"
   }
+
 });
 
-    var selected;
-    function selectProject(id) {
-      if (selected) {
-        selected.isHover = false;
-      }
-      selected = imageSeries.getImageById(id);
-      selected.isHover = true;
-    }
+    // var selected;
+    // function selectProject(id) {
+    //   if (selected) {
+    //     selected.isHover = false;
+    //   }
+    //   selected = imageSeries.getImageById(id);
+    //   selected.isHover = true;
+    // }
 
-    imageTemplate.events.on("over", function(ev) {
-      if (ev.target != selected) {
-        selected.isHover = false;
-      }
+    // imageTemplate.events.on("over", function(ev) {
+    //   if (ev.target != selected) {
+    //     selected.isHover = false;
+    //   }
       
-      // This is needed so that "unhovering" previous polygon does not hide tooltip
-      ev.target.isHover = false;
-      ev.target.isHover = true;
-    });
+    //   // This is needed so that "unhovering" previous polygon does not hide tooltip
+    //   ev.target.isHover = false;
+    //   ev.target.isHover = true;
+    // });
 
     
     var circle = imageSeries.mapImages.template.createChild(am4core.Circle);
@@ -204,6 +205,7 @@
     hoverState.properties.strokeOpacity = 0.8;
     hoverState.properties.scale = 1.5;
 
+    // onhover event
     outerCircle.events.on("over", function(event){
       var innerCircle = event.target.parent.children.getIndex(1);
       innerCircle.isHover = true;
@@ -216,7 +218,6 @@
       var innerCircle = event.target.parent.children.getIndex(1);
       innerCircle.isHover = false;
     });
-
 
 
     var colorSet = new am4core.ColorSet();
@@ -396,19 +397,20 @@
   <img src="data/img/equity.jpg" class="logo"/>
 
   <section class="container">
-    <div id="vertical-menu" class="vertical-menu">
-      <a onclick="selectProject(kudz_ze_kayah)" >Kudz Ze Kayah</a>
-      <a onclick="selectProject('Madsen')" >Madsen</a>
-      <a onclick="selectProject('mt_milligan')">Mount Milligan</a>
-      <a onclick="selectProject('detour')">Detour Trend</a>
-      <a onclick="selectProject('berg')">Berg</a>
-      <a onclick="selectProject('wernecke')" class="middle">Wernecke</a>
-      <a onclick="selectProject('homestake')" class="middle">Homestake Ridge</a>
-      <a onclick="selectProject('wolverine')"class="middle">Wolverine</a>
-      <a onclick="selectProject('hog_ranch')" class="middle">Hog Ranch</a>
+    <div  class="vertical-menu">
+      <p class = "project_nav_label"><a>Key Projects</a></p>
+      <div class = "project_nav_item"><a onclick="selectProject('kudz_ze_kayah')" id ="kudz_ze_kayah" >Kudz Ze Kayah</a></div>
+      <div class = "project_nav_item"><a onclick="selectProject('madsen')" id="madsen">Madsen</a></div>
+      <div class = "project_nav_item"><a onclick="selectProject('mt_milligan')" id="mt_milligan">Mount Milligan</a></div>
+      <div class = "project_nav_item"> <a onclick="selectProject('detour')" id="detour">Detour Trend</a></div>
+      <div class = "project_nav_item"><a onclick="selectProject('berg')" id="berg">Berg</a></div>
+      <div class = "project_nav_item"><a onclick="selectProject('wernecke')" id="wernecke">Wernecke</a></div>
+      <div class = "project_nav_item"><a onclick="selectProject('homestake')" id="homestake">Homestake Ridge</a></div>
+      <div class = "project_nav_item"><a onclick="selectProject('wolverine')"id="wolverine">Wolverine</a></div>
+      <div class = "project_nav_item"><a onclick="selectProject('hog_ranch')" id="hog_ranch">Hog Ranch</a></div>
   </div>
     <div class="chartdiv"></div>
-    <div id = "info" class="info"></div>
+    <div id = "info" class = "info" ></div>
 
   </section>
 
