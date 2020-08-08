@@ -1,0 +1,87 @@
+@import url(https://fonts.googleapis.com/css?family=Quando);
+*, *:after, *:before {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+body { margin: 0; 
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+
+.container {
+  width: 100%;
+  height: 700px;
+  display: flex;
+  flex-wrap:wrap;
+  background: white;
+  margin: auto;
+  padding: 0px;
+}
+
+.chartdiv{
+    height: 100%;
+    width:50%;
+    flex-grow: 1;
+    display:inline-block;
+    background-color: white;
+}
+.info{
+    height: 100%;
+    width:30%;
+    flex-grow: 1;
+    display:inline-block;
+    background-color:white;
+    padding-top: 25px;
+
+
+}
+
+.logo
+{
+  position: absolute;
+  top: -50px;
+  left: 20px;
+}
+
+.vertical-menu {
+  flex-grow: 1;
+  width: 10%;
+}
+
+.vertical-menu a {
+  background-color: white;
+  color: "#343434";
+  display:block;
+  padding: 8px;
+  text-decoration: bold;  
+  cursor: pointer;
+  text-align: right;
+  margin-right: 10%;
+  padding-top: 15px;
+
+}
+
+a.middle
+{
+    position: relative;
+}
+
+a.middle:before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(90deg, rgba(255,251,191,1) 0%, rgba(250,237,0,1) 100%);
+  visibility: hidden;
+  transition: all 0.5s ease-in-out;
+}
+
+a.middle:hover:before, a:focus {
+  visibility: visible;
+  width: 50%;
+  text-decoration: underline;
+}
+

@@ -1,64 +1,8 @@
 <!-- Styles -->
-<style>
 
-.container {
-  width: 100%;
-  height: 650px;
-  display: flex;
-  flex-wrap:wrap;
-  background: white;
-  margin: auto;
-  padding: 0px;
-}
-
-.chartdiv{
-    height: 100%;
-    width:50%;
-    flex-grow: 1;
-    display:inline-block;
-    background-color: white;
-}
-.info{
-    height: 100%;
-    width:40%;
-    flex-grow: 1;
-    display:inline-block;
-    background-color:white;
-    padding-top: 25px;
-    margin-right: 10%;
-
-}
-/* 
-.chartdiv {
-  width: 50%;
-  height: 650px;
-  float: left;
-}
-
-.info {
-  margin-right: 10%;
-  margin-left: 10%;
-  margin-top: 30px;
-  height: 650px;
-  padding-top: 25px;
-  background: transparent;
-} */
-
-    body { margin: 0; 
-           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-}
-
-a {
-  text-decoration: underline;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-p {
-  text-align: center;
-}
-
-    </style>
+<head>
+  <link rel="stylesheet" type="text/css" href="css/index.css">
+  </head>
     
     <!-- Resources -->
     <script src="data/countries_clipped.js"></script>
@@ -97,6 +41,7 @@ p {
    chart.seriesContainer.resizable = false;
    chart.seriesContainer.events.disableType("doublehit");
    chart.chartContainer.background.events.disableType("doublehit");
+   chart.chartContainer.wheelable = false;
     
     // Create map polygon series
     var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
@@ -111,23 +56,6 @@ p {
     polygonTemplate.polygon.fill = am4core.color("#c6c8c7");
     polygonTemplate.strokeWidth = 1.5;
 
-//   var labelSeries = chart.series.push(new am4maps.MapImageSeries());
-//    var labelTemplate = labelSeries.mapImages.template.createChild(am4core.Label);
-//    labelTemplate.horizontalCenter = "middle";
-//    labelTemplate.verticalCenter = "middle";
-//    labelTemplate.fontSize = 10;
-//    labelTemplate.nonScaling = true;
-//    labelTemplate.interactionsEnabled = false;
-
-//    polygonSeries.events.on("inited", function () {
-//   polygonSeries.mapPolygons.each(function (polygon) {
-//     var label = labelSeries.mapImages.create();
-//     var state = polygon.dataItem.dataContext.id.split("-").pop();
-//     label.latitude = polygon.visualLatitude;
-//     label.longitude = polygon.visualLongitude;
-//     label.children.getIndex(0).text = state;
-//   });
-// });
 
     // globe background
     // chart.backgroundSeries.mapPolygons.template.polygon.fill = am4core.color("#aadaff");
@@ -151,10 +79,9 @@ p {
 
     
     // Hover state
-    var hs = subDivPolygonTemplate.states.create("hover");
-    hs.properties.stroke = am4core.color("#fcb416");
-    hs.strokeWidth = 510;
-
+    var subdivHover = subDivPolygonTemplate.states.create("hover");
+    subdivHover.properties.stroke = am4core.color("#fcb416");
+    subdivHover.strokeWidth = 510;
 
     
     // Add image series
@@ -177,7 +104,6 @@ p {
     imageSeries.tooltip.background.fill = am4core.color("#343434");
     imageSeries.tooltip.background.stroke = am4core.color("white");
     imageSeries.tooltip.background.strokeWidth = 2;
-
     imageSeries.cursorOverStyle = am4core.MouseCursorStyle.pointer;
 
 
@@ -188,7 +114,7 @@ p {
   imageTemplate.events.on("hit", function(ev) {
   var data = ev.target.dataItem.dataContext;
   var info = document.getElementById("info");
-  info.innerHTML = "<img src='" + data.image + "' width='570' height='305'" + "<br><h1>" + data.name + " </h1><hr /> " + "<h3><span style='color:#fcb416'>" 
+  info.innerHTML = "<img src='" + data.image + "' width='570' height='305'" + "<br><h1><span style='color:#343434'>" + data.name + " </span></h1><hr /> " + "<h3><span style='color:#fcb416'>" 
     + data.location + " | " + data.stage + "<br>" + data.status + " | " + data.commodity + "</span>" + "</h3>";
   if (data.description) {
     info.innerHTML += data.description;
@@ -197,6 +123,25 @@ p {
     info.innerHTML += "<i>No description provided.</i>"
   }
 });
+
+    var selected;
+    function selectProject(title) {
+      if (selected) {
+        selected.isHover = false;
+      }
+      selected = imageSeries.getImageById(title);
+      selected.isHover = true;
+    }
+
+    imageTemplate.events.on("over", function(ev) {
+      if (ev.target != selected) {
+        selected.isHover = false;
+      }
+      
+      // This is needed so that "unhovering" previous polygon does not hide tooltip
+      ev.target.isHover = false;
+      ev.target.isHover = true;
+    });
 
     
     var circle = imageSeries.mapImages.template.createChild(am4core.Circle);
@@ -222,6 +167,31 @@ p {
         })
     }
     
+    var outerCircle = imageSeries.mapImages.template.createChild(am4core.Circle);
+    outerCircle.radius = 30;
+    outerCircle.fillOpacity = 0;
+    outerCircle.strokeOpacity = 0;
+    outerCircle.strokeDasharray = "1";
+
+    var hoverState = outerCircle.states.create("hover");
+    hoverState.properties.strokeOpacity = 0.8;
+    hoverState.properties.scale = 1.5;
+
+    outerCircle.events.on("over", function(event){
+      var innerCircle = event.target.parent.children.getIndex(1);
+      innerCircle.isHover = true;
+      event.target.stroke = innerCircle.fill;
+      event.target.radius = innerCircle.pixelRadius;
+      event.target.animate({property: "rotation", from: 0, to: 360}, 5000, am4core.ease.sinInOut);
+    });
+
+    outerCircle.events.on("out", function(event){
+      var innerCircle = event.target.parent.children.getIndex(1);
+      innerCircle.isHover = false;
+    });
+
+
+
     var colorSet = new am4core.ColorSet();
     
     imageSeries.data = [   {
@@ -377,51 +347,44 @@ p {
 
     } ];
 
-// var selected;
-// function selectProject(id) {
-//   if (selected) {
-//     selected.isHover = false;
-//   }
-//   selected = imageTemplate.getImageById(id);
-//   selected.isHover = true;
-// }
-
-// imageTemplate.events.on("over", function(ev) {
-//   if (ev.target != selected) {
-//     selected.isHover = false;
-//   }
-  
-//   // This is needed so that "unhovering" previous point does not hide tooltip
-//   ev.target.isHover = false;
-//   ev.target.isHover = true;
-// });
-
     /* Add legend */
     // chart.legend = new am4maps.Legend();
     // chart.legend.position = "right";
     // chart.legend.align = "right";
 
     // reset view
-//     var home = chart.chartContainer.createChild(am4core.Button);
-//     home.label.text = "Reset View";
-//     home.align = "left";
-//     home.events.on("hit", function(ev) {
-//     chart.goHome();
+    // var home = chart.chartContainer.createChild(am4core.Button);
+    // home.label.text = "Reset View";
+    // home.align = "left";
+    // home.events.on("hit", function(ev) {
+    // chart.goHome();
 
 // });
+
     }); // end am4core.ready()
     </script>
-    
+
+    <body>
     <!-- HTML -->
+  <img src="data/img/equity.jpg" class="logo"/>
+
   <section class="container">
     <div class="chartdiv"></div>
     <div id = "info" class="info"></div>
+    <div id="vertical-menu" class="vertical-menu">
+      <a onclick="selectProject('kudz_ze_kayah')" class="middle">Kudz Ze Kayah</a>
+      <a onclick="selectProject('Madsen')" class="middle">Madsen</a>
+      <a onclick="selectProject('mt_milligan')" class="middle">Mount Milligan</a>
+      <a onclick="selectProject('detour')" class="middle">Detour Trend</a>
+      <a onclick="selectProject('berg')" class="middle">Berg</a>
+      <a onclick="selectProject('wernecke')" class="middle">Wernecke</a>
+      <a onclick="selectProject('homestake')" class="middle">Homestake Ridge</a>
+      <a onclick="selectProject('wolverine')"class="middle">Wolverine</a>
+      <a onclick="selectProject('hog_ranch')" class="middle">Hog Ranch</a>
+  </div>
   </section>
-  <p>
-    SELECT:
-    <a onclick="selectProject('kudz_ze_kayah')">kudz_ze_kayah</a>
-    <a onclick="selectProject('madsen')">madsen</a>
-    <a onclick="selectProject('mt_milligan')">mt_milligan</a>
-    <a onclick="selectProject('detour')">detour</a>
-    <a onclick="selectProject('berg')">berg</a>
-  </p>
+
+
+</body>
+
+
