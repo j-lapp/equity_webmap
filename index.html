@@ -79,9 +79,34 @@
 
     
     // Hover state
-    var subdivHover = subDivPolygonTemplate.states.create("hover");
-    subdivHover.properties.stroke = am4core.color("#fcb416");
-    subdivHover.strokeWidth = 510;
+    var hs = subDivPolygonTemplate.states.create("hover");
+    hs.properties.stroke = am4core.color("#fcb416");
+    hs.strokeWidth = 510;
+    // // Create hover state and set alternative fill color
+    // var hs = subDivPolygonTemplate.states.create("hover");
+    //   hs.properties.fill = am4core.color("#367B25");
+
+    //   subDivSeries.calculateVisualCenter = true;
+    //   subDivPolygonTemplate.tooltipPosition = "fixed";
+
+    //   var selected;
+    //   function selectCountry(id) {
+    //     if (selected) {
+    //       selected.isHover = false;
+    //     }
+    //     selected = subDivSeries.getPolygonById(id);
+    //     selected.isHover = true;
+    //   }
+
+    //   subDivSeries.events.on("over", function(ev) {
+    //     if (ev.target != selected) {
+    //       selected.isHover = false;
+    //     }
+        
+    //     // This is needed so that "unhovering" previous polygon does not hide tooltip
+    //     ev.target.isHover = false;
+    //     ev.target.isHover = true;
+    //   });
 
     
     // Add image series
@@ -104,6 +129,7 @@
     imageSeries.tooltip.background.fill = am4core.color("#343434");
     imageSeries.tooltip.background.stroke = am4core.color("white");
     imageSeries.tooltip.background.strokeWidth = 2;
+
     imageSeries.cursorOverStyle = am4core.MouseCursorStyle.pointer;
 
 
@@ -123,25 +149,6 @@
     info.innerHTML += "<i>No description provided.</i>"
   }
 });
-
-    var selected;
-    function selectProject(title) {
-      if (selected) {
-        selected.isHover = false;
-      }
-      selected = imageSeries.getImageById(title);
-      selected.isHover = true;
-    }
-
-    imageTemplate.events.on("over", function(ev) {
-      if (ev.target != selected) {
-        selected.isHover = false;
-      }
-      
-      // This is needed so that "unhovering" previous polygon does not hide tooltip
-      ev.target.isHover = false;
-      ev.target.isHover = true;
-    });
 
     
     var circle = imageSeries.mapImages.template.createChild(am4core.Circle);
@@ -369,8 +376,6 @@
   <img src="data/img/equity.jpg" class="logo"/>
 
   <section class="container">
-    <div class="chartdiv"></div>
-    <div id = "info" class="info"></div>
     <div id="vertical-menu" class="vertical-menu">
       <a onclick="selectProject('kudz_ze_kayah')" class="middle">Kudz Ze Kayah</a>
       <a onclick="selectProject('Madsen')" class="middle">Madsen</a>
@@ -382,6 +387,9 @@
       <a onclick="selectProject('wolverine')"class="middle">Wolverine</a>
       <a onclick="selectProject('hog_ranch')" class="middle">Hog Ranch</a>
   </div>
+    <div class="chartdiv"></div>
+    <div id = "info" class="info"></div>
+
   </section>
 
 

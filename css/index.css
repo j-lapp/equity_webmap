@@ -21,18 +21,20 @@ body { margin: 0;
 
 .chartdiv{
     height: 100%;
-    width:50%;
+    width:45%;
     flex-grow: 1;
     display:inline-block;
     background-color: white;
 }
 .info{
     height: 100%;
-    width:30%;
+    width:40%;
     flex-grow: 1;
     display:inline-block;
     background-color:white;
-    padding-top: 25px;
+    padding-top: 50px;
+    padding-right: 30px;
+
 
 
 }
@@ -47,6 +49,8 @@ body { margin: 0;
 .vertical-menu {
   flex-grow: 1;
   width: 10%;
+  padding-top: 80px;
+  height: 60%;
 }
 
 .vertical-menu a {
@@ -56,9 +60,8 @@ body { margin: 0;
   padding: 8px;
   text-decoration: bold;  
   cursor: pointer;
-  text-align: right;
-  margin-right: 10%;
-  padding-top: 15px;
+  text-align: left;
+  margin-left: 10%;
 
 }
 
@@ -71,10 +74,10 @@ a.middle:before {
   content: "";
   position: absolute;
   width: 0;
-  height: 2px;
+  height: 4px;
   bottom: 0;
-  right: 0;
-  background: linear-gradient(90deg, rgba(255,251,191,1) 0%, rgba(250,237,0,1) 100%);
+  left: 0;
+  background: linear-gradient(90deg, rgba(250,237,0,1) 0%, rgba(255,251,191,1) 100%);
   visibility: hidden;
   transition: all 0.5s ease-in-out;
 }
