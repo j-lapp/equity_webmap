@@ -113,13 +113,9 @@
     var imageSeries = chart.series.push(new am4maps.MapImageSeries());
     imageSeries.mapImages.template.propertyFields.longitude = "longitude";
     imageSeries.mapImages.template.propertyFields.latitude = "latitude";
-    // imageSeries.mapImages.template.tooltipText = "{title}";
-    imageSeries.mapImages.template.propertyFields.url = "url";
-    imageSeries.mapImages.template.tooltipHTML = `<center><strong>{title}</center>
-    <span style="color:#fffbbf"><hr /></span>
-    <span style="color:{color}; font-size: 12px; line-height: 1.5"><center>{location}<br>{commodity}</center></span></strong>`;
     imageSeries.tooltip.pointerOrientation = "left";
     imageSeries.tooltip.getFillFromObject = false;
+    imageSeries.calculateVisualCenter = true;
     imageSeries.tooltip.dx = 8;
     // var tooltipShadow = imageSeries.tooltip.background.filters.getIndex(0);
     // tooltipShadow.dx = 2;
@@ -129,13 +125,18 @@
     imageSeries.tooltip.background.fill = am4core.color("#343434");
     imageSeries.tooltip.background.stroke = am4core.color("white");
     imageSeries.tooltip.background.strokeWidth = 2;
-
     imageSeries.cursorOverStyle = am4core.MouseCursorStyle.pointer;
-
+    // imageSeries.mapImages.template.tooltipText = "{title}";
 
 // Configure series
   var imageTemplate = imageSeries.mapImages.template;
   var hs = imageTemplate.states.create("hover");
+
+  imageTemplate.propertyFields.url = "url";
+  imageTemplate.tooltipHTML = `<center><strong>{title}</center>
+    <span style="color:#fffbbf"><hr /></span>
+    <span style="color:{color}; font-size: 12px; line-height: 1.5"><center>{location}<br>{commodity}</center></span></strong>`;
+  imageTemplate.tooltipPosition = "fixed";
 
   imageTemplate.events.on("hit", function(ev) {
   var data = ev.target.dataItem.dataContext;
@@ -149,6 +150,25 @@
     info.innerHTML += "<i>No description provided.</i>"
   }
 });
+
+    var selected;
+    function selectProject(id) {
+      if (selected) {
+        selected.isHover = false;
+      }
+      selected = imageSeries.getImageById(id);
+      selected.isHover = true;
+    }
+
+    imageTemplate.events.on("over", function(ev) {
+      if (ev.target != selected) {
+        selected.isHover = false;
+      }
+      
+      // This is needed so that "unhovering" previous polygon does not hide tooltip
+      ev.target.isHover = false;
+      ev.target.isHover = true;
+    });
 
     
     var circle = imageSeries.mapImages.template.createChild(am4core.Circle);
@@ -377,11 +397,11 @@
 
   <section class="container">
     <div id="vertical-menu" class="vertical-menu">
-      <a onclick="selectProject('kudz_ze_kayah')" class="middle">Kudz Ze Kayah</a>
-      <a onclick="selectProject('Madsen')" class="middle">Madsen</a>
-      <a onclick="selectProject('mt_milligan')" class="middle">Mount Milligan</a>
-      <a onclick="selectProject('detour')" class="middle">Detour Trend</a>
-      <a onclick="selectProject('berg')" class="middle">Berg</a>
+      <a onclick="selectProject(kudz_ze_kayah)" >Kudz Ze Kayah</a>
+      <a onclick="selectProject('Madsen')" >Madsen</a>
+      <a onclick="selectProject('mt_milligan')">Mount Milligan</a>
+      <a onclick="selectProject('detour')">Detour Trend</a>
+      <a onclick="selectProject('berg')">Berg</a>
       <a onclick="selectProject('wernecke')" class="middle">Wernecke</a>
       <a onclick="selectProject('homestake')" class="middle">Homestake Ridge</a>
       <a onclick="selectProject('wolverine')"class="middle">Wolverine</a>
