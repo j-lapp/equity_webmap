@@ -53,7 +53,7 @@
     // Configure series
     var polygonTemplate = polygonSeries.mapPolygons.template;
     polygonTemplate.polygon.fillOpacity = 0.9;
-    polygonTemplate.polygon.fill = am4core.color("#c6c8c7");
+    polygonTemplate.polygon.fill = am4core.color("#343434");
     polygonTemplate.strokeWidth = 1.5;
 
 
@@ -62,26 +62,24 @@
     // chart.backgroundSeries.mapPolygons.template.polygon.fillOpacity = 1;
 
     // highlighted subdividions added
-    var subDivSeries = chart.series.push(new am4maps.MapPolygonSeries());
-    subDivSeries.geodata = subdiv;
-    subDivSeries.tooltipText = "{name}";
-    subDivSeries.nonScalingStroke = true;
-    subDivSeries.tooltip.label.fontSize = 5;
+    // var subDivSeries = chart.series.push(new am4maps.MapPolygonSeries());
+    // subDivSeries.geodata = subdiv;
+    // // subDivSeries.tooltipText = "{name}";
+    // subDivSeries.tooltip.label.fontSize = 5;
 
-    var subDivPolygonTemplate = subDivSeries.mapPolygons.template;
-    subDivPolygonTemplate.fill = am4core.color("#343434");
-    subDivPolygonTemplate.stroke = am4core.color("#5d6160");
-    subDivPolygonTemplate.strokeWidth = 0.2;
-    subDivPolygonTemplate.nonScalingStroke = false;
-    // var shadow = subDivPolygonTemplate.filters.push(new am4core.DropShadowFilter());
-    // shadow.dx = 2;
-    // shadow.dy = 0; 
+    // var subDivPolygonTemplate = subDivSeries.mapPolygons.template;
+    // subDivPolygonTemplate.fill = am4core.color("white");
+    // subDivPolygonTemplate.stroke = am4core.color("#5d6160");
+    // subDivPolygonTemplate.strokeWidth = 0.2;
+    // // var shadow = subDivPolygonTemplate.filters.push(new am4core.DropShadowFilter());
+    // // shadow.dx = 2;
+    // // shadow.dy = 0; 
 
     
-    // Hover state
-    var hs = subDivPolygonTemplate.states.create("hover");
-    hs.properties.stroke = am4core.color("#fcb416");
-    hs.strokeWidth = 510;
+    // // Hover state
+    // var hs = subDivPolygonTemplate.states.create("hover");
+    // hs.properties.stroke = am4core.color("#fcb416");
+    // hs.strokeWidth = 1;
     // // Create hover state and set alternative fill color
     // var hs = subDivPolygonTemplate.states.create("hover");
     //   hs.properties.fill = am4core.color("#367B25");
